@@ -1,0 +1,55 @@
+#include<bits/stdc++.h>
+using namespace std;
+// convert s1 to s2 --->>> 3 options avaialable
+// insert remove replace
+
+// Recursive Implementation
+int edit_distance(string s1,string s2,int m,int n)
+{
+    if(m==0)
+        return n; // insert n characters
+    if(n==0)
+        return m; // remove m characters
+    if(s1[m-1] == s2[n-1])
+        return edit_distance(s1,s2,m-1,n-1);
+    return 1 + min(min(edit_distance(s1,s2,m-1,n),edit_distance(s1,s2,m,n-1)),edit_distance(s1,s2,m-1,n-1));
+    // m-1 n remove m n-1 insert m-1 n-1 replace
+}
+DP Implementation
+int dp_edit_distance(string s1,string s2,int m,int n)
+{
+    int dp[m+1][n+1];
+    for(int i=0;i<=m;i++)
+    {
+        for(int j=0;j<=n;j++)
+        {
+            if(i==0)
+                dp[0][j] = j; // j length ki string ko insert
+            else if(j==0)
+                dp[i][0] = i; // i length delete
+            else if(s1[i-1]==s2[j-1])
+            {
+                dp[i][j] = dp[i-1][j-1];
+            }
+            else{
+                dp[i][j] = 1 + min(min(dp[i][j-1],dp[i-1][j]),dp[i-1][j-1]);
+
+            }
+        }
+    }
+    return dp[m][n];
+}
+int main()
+{
+    int t;
+    cin>>t;
+    while(t--)
+    {
+    string s1,s2;
+    cin>>s1>>s2;
+    int m = s1.length();
+    int n = s2.length();
+    //cout<<edit_distance(s1,s2,m,n)<<" ";
+    cout<<dp_edit_distance(s1,s2,m,n)<<endl;
+    }
+}
